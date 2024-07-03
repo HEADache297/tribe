@@ -3,56 +3,58 @@
 
 {% block content %}
 <!-- component -->
-<div class="container mx-auto mt-14">
-    <div class="wrapper bg-white rounded shadow w-full">
-        <div class="header flex justify-between border-b p-2">
-            <span class="text-lg font-bold">
-                2024 June
-            </span>
+<div class="container mt-14">
+    <div class="wrapper bg-gray-900 rounded shadow w-full">
+        <div class="p-3 bg-blue-950 mt-14 rounded-lg flex flex-row justify-between">
+            <h1 class="text-2xl text-white">Schedule</h1>
         </div>
-        <table class="w-full">
-            <thead>
-                <tr>
-                    <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                        <span class="xl:block lg:block md:block sm:block hidden">Monday</span>
-                        <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Mon</span>
-                    </th>
-                    <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                        <span class="xl:block lg:block md:block sm:block hidden">Tuesday</span>
-                        <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Tue</span>
-                    </th>
-                    <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                        <span class="xl:block lg:block md:block sm:block hidden">Wednesday</span>
-                        <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Wed</span>
-                    </th>
-                    <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                        <span class="xl:block lg:block md:block sm:block hidden">Thursday</span>
-                        <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Thu</span>
-                    </th>
-                    <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                        <span class="xl:block lg:block md:block sm:block hidden">Friday</span>
-                        <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Fri</span>
-                    </th>
-                    <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                        <span class="xl:block lg:block md:block sm:block hidden">Saturday</span>
-                        <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Sat</span>
-                    </th>
-                    <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                        <span class="xl:block lg:block md:block sm:block hidden">Sunday</span>
-                        <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Sun</span>
-                    </th>
-                </tr>
-            </thead>
-        </table>
+        <div class="w-full m-2">
+            <div class="grid grid-cols-7 gap-2 text-white">
+                <div class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+                    <span class="xl:block lg:block md:block sm:block hidden">Monday</span>
+                    <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Mon</span>
+                </div>
+                <div class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+                    <span class="xl:block lg:block md:block sm:block hidden">Tuesday</span>
+                    <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Tue</span>
+                </div>
+                <div class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+                    <span class="xl:block lg:block md:block sm:block hidden">Wednesday</span>
+                    <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Wed</span>
+                </div>
+                <div class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+                    <span class="xl:block lg:block md:block sm:block hidden">Thursday</span>
+                    <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Thu</span>
+                </div>
+                <div class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+                    <span class="xl:block lg:block md:block sm:block hidden">Friday</span>
+                    <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Fri</span>
+                </div>
+                <div class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+                    <span class="xl:block lg:block md:block sm:block hidden">Saturday</span>
+                    <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Sat</span>
+                </div>
+                <div class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+                    <span class="xl:block lg:block md:block sm:block hidden">Sunday</span>
+                    <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Sun</span>
+                </div>
+            </div>
+        </div>
         <div class="grid grid-cols-7 gap-2 text-white m-2 h-max">
-            {% for week in calendar %}
-                {% for day in week %}
-                    {% if day != 0 %}
-                        <div class="bg-blue-950 rounded-lg h-32 flex justify-center items-center">{{ day }}</div>
+            {% for item in scheduleList %}
+                    {% if item.day != 0 %}
+                        <div class="bg-blue-950 rounded-lg h-32 flex flex-col justify-center items-center">
+                            <div class="">{{ item.day }}</div>
+
+                            {% if item.schedules %}
+                                {% for schedule in item.schedules %}
+                                    <div class="text-white bg-green-400 rounded-lg p-1 px-2 mt-2">{{ schedule.subject.title }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                     {% else %}
-                        <div class="bg-gray-600 rounded-lg h-32 flex justify-center items-center"></div>
+                        <div class="bg-blue-900 rounded-lg h-32 flex justify-center items-center"></div>
                     {% endif %}   
-                {% endfor %}
             {% endfor %}
         </div>
     </div>

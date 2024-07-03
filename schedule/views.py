@@ -45,10 +45,14 @@ def schedule(request):
     import calendar
 
     calendar = calendar.Calendar()
-    c = calendar.monthdayscalendar(year=2024, month=6)
-    print(c)
+    c = calendar.monthdayscalendar(year=2024, month=7)
+    scheduleList = []
 
-    schedule = Schedule.objects.filter(datetime__year=2024, datetime__month=6).all()
-    # print(schedule)
+    for week in c:
+        for day in week:
+            schedules = Schedule.objects.filter(datetime__year=2024, datetime__month=7, datetime__day=day).all()
+            scheduleList.append({'day': day, 'schedules': schedules})
 
-    return render(request, 'schedule/schedule.html', context={'schedule': schedule, 'calendar': c})
+    print(scheduleList)
+
+    return render(request, 'schedule/schedule.html', context={'calendar': c, 'scheduleList': scheduleList})
