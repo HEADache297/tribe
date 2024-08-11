@@ -41,18 +41,32 @@ def create_schedule(request, subject_id):
 
 @login_required
 def schedule(request):
-    from .models import Schedule
+    from .models import Schedule, Subject
     import calendar
+    import datetime
 
-    calendar = calendar.Calendar()
-    c = calendar.monthdayscalendar(year=2024, month=7)
+    date = datetime.date.today()
+    title = datetime.datetime.now().strftime('%Y %B')
+
+    calendar_obj = calendar.Calendar()
+    c = calendar_obj.monthdayscalendar(year=date.year, month=date.month)
+
     scheduleList = []
+    if request.user.is_student:
+        subjects = Subject.objects.filter(students=request.user).all()
+    else:
+        subjects = Subject.objects.filter(teacher=request.user).all()
+
+
+    print(subjects)
+    
+    
+    schedules = Schedule.objects.filter(subject__in=subjects, datetime__year=date.year, datetime__month=date.month).all()
+    print(schedules)
 
     for week in c:
         for day in week:
-            schedules = Schedule.objects.filter(datetime__year=2024, datetime__month=7, datetime__day=day).all()
-            scheduleList.append({'day': day, 'schedules': schedules})
+            daily_schedules = schedules.filter(datetime__day=day)
+            scheduleList.append({'day': day, 'schedules': daily_schedules})
 
-    print(scheduleList)
-
-    return render(request, 'schedule/schedule.html', context={'calendar': c, 'scheduleList': scheduleList})
+    return render(request, 'schedule/schedule.html', context={'calendar': c, 'scheduleList': scheduleList, 'title' : title})

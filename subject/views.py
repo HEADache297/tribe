@@ -155,6 +155,34 @@ def delete_student(request, subject_id, student_id):
             return JsonResponse({'status': 'failed', 'error': 'invalid request'}), 400
         
 @login_required
+def material_page(request, subject_id, material_id):
+    from . models import Subject, Material, HomeworkFile
+    from .forms import AddHomeworkForm, HomeworkFileForm
+
+    subject = get_object_or_404(Subject, pk=subject_id)
+    material = get_object_or_404(Material, pk=material_id)
+
+    homeworkForm = AddHomeworkForm()
+    homeworkFileFormSet = modelformset_factory(HomeworkFile, form=HomeworkFileForm, extra=1)
+    file_formset = homeworkFileFormSet(queryset=HomeworkFile.objects.none())
+
+    if request.method == 'POST':
+        homework_form = AddHomeworkForm(request.POST)
+        file_formset = homeworkFileFormSet(request.POST, request.FILES, queryset=HomeworkFile.objects.none())
+
+        if homework_form.is_valid() and file_formset.is_valid():
+            pass
+
+    context = {
+        'subject': subject,
+        'material': material,
+        'form': homeworkForm,
+        'file_formset': file_formset
+    }
+
+    return render(request, 'courses/material_page.html', context=context)
+
+@login_required
 def delete_material(request, subject_id, material_id):
     from .models import Material
     if request.method == 'POST':

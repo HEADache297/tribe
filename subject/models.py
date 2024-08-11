@@ -41,5 +41,14 @@ class MaterialFile(models.Model):
     file = models.FileField(upload_to='materials/%Y/%m/%d')
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+class Homework(models.Model):
+    student = models.ForeignKey(CustomUser, related_name='homeworks', on_delete=models.CASCADE)
+    material = models.ForeignKey(Material, related_name='homeworks', on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
     
-    
+
+class HomeworkFile(models.Model):
+    homework = models.ForeignKey(Homework, related_name='files', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='homeworks/%Y/%m/%d')
+    created_at = models.DateTimeField(auto_now_add=True)

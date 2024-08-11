@@ -3,6 +3,7 @@ from .models import Subject, Material, MaterialFile
 from django.forms.widgets import Input, TimeInput, URLInput
 from user.models import CustomUser
 from tinymce.widgets import TinyMCE
+from .models import Homework, HomeworkFile
 
 
 
@@ -49,8 +50,6 @@ class MultipleFileField(forms.FileField):
         return result
 
 
-
-
 # The `MaterialForm` class allows users to input a title and description for a material, using TinyMCE for rich text editing.
 class MaterialForm(forms.ModelForm):
     title = forms.CharField(max_length=255, widget=Input(attrs={'class': 'h-12 rounded-lg p-2 bg-gray-900 text-white w-96', 'placeholder': 'Title'}))
@@ -72,4 +71,20 @@ class MaterialFileForm(forms.ModelForm):
         fields = ['file']
 
 
+class AddHomeworkForm(forms.ModelForm):
+    description = forms.CharField(widget=TinyMCE(attrs={
+        'class': 'm-2 h-12 rounded-lg p-2 bg-gray-900 text-white', 
+        'placeholder': 'Description'
+    }))
+
+    class Meta:
+        model = Homework
+        fields = ['description']
+
+class HomeworkFileForm(forms.ModelForm):
+    file = MultipleFileField()
+
+    class Meta:
+        model = HomeworkFile
+        fields = ['file']
 

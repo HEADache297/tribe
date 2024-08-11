@@ -5,6 +5,8 @@ __pycache__/
 
 staticfiles
 static/media/profile_images/*
+static/media/materials/*
+static/media/homeworks/*
 
 # C extensions
 *.so

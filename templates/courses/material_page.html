@@ -1,0 +1,77 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+
+<div class="p-3 bg-blue-950 mt-14 rounded-lg flex flex-row">
+    <a href="{% url 'course' id=subject.id %}" class="bg-gray-900 rounded-lg text-white p-2 w-12"><-</a>
+            <h1 class="text-2xl text-white ml-2">{{ subject.title }}</h1>
+</div>
+
+<div class="w-full mt-4 text-white">
+    <div class="rounded-lg bg-blue-950 p-3">
+        <div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="task-element-{{ material.id }}">
+            <div class="flex flex-row justify-between">
+                <div class="text-xl">{{ material.title }}</div>
+            </div>
+            <hr class="border-gray-900 border rounded-lg my-2" />
+            {{ material.description|safe }}
+            <div class="text-white">
+                <div class="flex flex-row overflow-x-auto">
+                    {% for file in material.files.all %}
+                    {% if file.file.url.lower|slice:"-4:" == ".pdf" %}
+                    <embed src="{% static file.file.url %}" type="application/pdf" />
+                    {% elif file.file.url.lower|slice:"-5:" == ".jpeg" or file.file.url.lower|slice:"-4:" == ".jpg" or file.file.url.lower|slice:"-4:" == ".png" or file.file.url.lower|slice:"-4:" == ".gif" %}
+                    <a href="{{ file.file.url }}" target="_blank">
+                        <img src="{{ file.file.url }}" width="200px" />
+                    </a>
+                    {% elif file.file.url.lower|slice:"-4:" == ".mp4" or file.file.url.lower|slice:"-5:" == ".webm" %}
+                    <video width="320" height="240" controls>
+                        <source src="{{ file.file.url }}" type="video/{{ file.file.url.lower|slice:' -3:' }}"> Your
+                        browser does not
+                        support the video tag.
+                    </video>
+                    {% elif file.file.url.lower|slice:"-4:" == ".mp3" or file.file.url.lower|slice:"-4:" == ".wav" %}
+                    <audio controls>
+                        <source src="{{ file.file.url }}" type="audio/{{ file.file.url.lower|slice:" -3:" }}">
+                        Your browser does not support the audio element.
+                    </audio>
+                    {% else %}
+                    <p>
+                        File type not supported for preview.
+                        <a href="{{ file.file.url }}">Download</a>
+                    </p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <hr class="border-gray-900 border rounded-lg my-2" />
+                {{ material.created_at }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="w-full mt-4 text-white">
+    <div class="rounded-lg bg-blue-950 p-3">
+        <div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="task-element-{{ material.id }}">
+            <h2 class="font-bold text-3xl mb-3 ml-3 text-white self-center">
+                Add Homework
+            </h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="ms-3 me-3">
+                    {{ form.media }} {{ form.description }}
+                </div>
+
+                <div class="chose-file">
+                    {{ file_formset.management_form }} {% for form_file in file_formset %} {{ form_file.file }}
+                    {% endfor %}
+                    <button type="submit"
+                        class="bg-gray-900 hover:bg-green-400 text-white font-bold py-2 px-4 rounded mx-4 mt-4">
+                        Upload
+                    </button
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,371 +1,376 @@
-{% extends "base.html" %}
-
-
-{% load static %}
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block content %}
 <style>
-    .chose-file input {
-        border: 1px solid rgb(255, 255, 255);
-        border-radius: 5px;
-        color: aliceblue;
-        width: 40%;
-    }
+	.chose-file input {
+		border: 1px solid rgb(255, 255, 255);
+		border-radius: 5px;
+		color: aliceblue;
+		width: 40%;
+	}
 
-    .chose-file {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-    }
+	.chose-file {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+	}
 
-    #material-form {
-        display: none;
-        transition: all 0.5s ease;
-    }
+	#material-form {
+		display: none;
+		transition: all 0.5s ease;
+	}
 </style>
 
-
-<div class="p-3 bg-blue-950 mt-14 rounded-lg flex flex-row justify-between">
-    <h1 class="text-2xl text-white">{{ subject.title }}</h1>
+<div class="p-3 bg-blue-950 mt-14 rounded-lg flex flex-row">
+    <a href="{% url 'homepage' %}" class="bg-gray-900 rounded-lg text-white p-2 w-12"><-</a>
+    <h1 class="text-2xl text-white ml-2">{{ subject.title }}</h1>
 </div>
 
 <div class="mt-4 w-full text-white flex flex-row">
-    <div class="w-96">
-        <!-- SUMMARY -->
-        <div class="bg-blue-950 p-3 rounded-lg">
-            <p class="text-xl">About</p>
-            <p class="text-sm break-words" style="overflow-wrap: break-word;">{{ subject.summary }}</p>
-        </div>
-        <!-- COURSE LINK -->
-        <div class="bg-blue-950 p-3 rounded-lg mt-4">
-            <p class="text-xl">Course link</p>
-            <button onclick="copy()"
-                class="w-full flex flex-row rounded-lg p-3 bg-green-400 mt-4 justify-between hover:bg-green-300">
-                <p>/course/connect/...</p>
-                <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path fill="#fff"
-                        d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z" />
-                </svg>
-            </button>
-            <p class="hidden" id="url">/course/connect/{{ subject.id }}</p>
-        </div>
-        <!-- SCHEDULE -->
-        <div class="bg-blue-950 p-3 rounded-lg mt-4 flex flex-col">
-            <div class="flex flex-row justify-between">
-                <p class="text-xl">Planned meetings</p>
-                <button onclick="openScheduleForm()"
-                    class="inline-flex w-11 h-11 justify-center items-center bg-green-400 hover:bg-green-300 text-pink-50 hover:text-white rounded-full transition duration-150">
-                    <span class="font-bold -mt-px">+</span></button>
-            </div>
-            <div id="schedule" class="w-full hidden">
-                <div class="relative mx-auto rounded-md max-w-md">
-                    <div class=" pt-0 text-center">
-                        <div class="text-xl font-bold text-white mt-5">Plan a meeting</div>
-                        <form method="post" id="scheduleForm">
-                            {% csrf_token %}
+	<div class="w-96">
+		<!-- SUMMARY -->
+		<div class="bg-blue-950 p-3 rounded-lg">
+			<p class="text-xl">About</p>
+			<p class="text-sm break-words" style="overflow-wrap: break-word">
+				{{ subject.summary }}
+			</p>
+		</div>
+		<!-- COURSE LINK -->
+		<div class="bg-blue-950 p-3 rounded-lg mt-4">
+			<p class="text-xl">Course link</p>
+			<button onclick="copy()"
+				class="w-full flex flex-row rounded-lg p-3 bg-green-400 mt-4 justify-between hover:bg-green-300">
+				<p>/course/connect/...</p>
+				<svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+					xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+					<path fill="#fff"
+						d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z" />
+				</svg>
+			</button>
+			<p class="hidden" id="url">/course/connect/{{ subject.id }}</p>
+		</div>
+		<!-- SCHEDULE -->
+		<div class="bg-blue-950 p-3 rounded-lg mt-4 flex flex-col">
+			<div class="flex flex-row justify-between">
+				<p class="text-xl">Planned meetings</p>
+				<button onclick="openScheduleForm()"
+					class="inline-flex w-11 h-11 justify-center items-center bg-green-400 hover:bg-green-300 text-pink-50 hover:text-white rounded-full transition duration-150">
+					<span class="font-bold -mt-px">+</span>
+				</button>
+			</div>
+			<div id="schedule" class="w-full hidden">
+				<div class="relative mx-auto rounded-md max-w-md">
+					<div class="pt-0 text-center">
+						<div class="text-xl font-bold text-white mt-5">Plan a meeting</div>
+						<form method="post" id="scheduleForm">
+							{% csrf_token %}
 
-                            <div class="w-full">
-                                {{ form.title }}
-                                {{ form.summary }}
-                                {{ form.duration }}
-                                {{ form.datetime }}
-                                {{ form.url }}
-                            </div>
+							<div class="w-full">
+								{{ form.title }} {{ form.summary }} {{ form.duration }} {{
+								form.datetime }} {{ form.url }}
+							</div>
 
-                            <div class="flex flex-row justify-between p-2">
-                                <button onclick="closeScheduleForm()"
-                                    class="text-white bg-gray-900 hover:bg-blue-950 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center">
-                                    Cancel
-                                </button>
-                                <button onclick="closeScheduleForm()" type="submit"
-                                    class="text-white bg-green-400 hover:bg-green-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center">
-                                    Confirm
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+							<div class="flex flex-row justify-between p-2">
+								<button onclick="closeScheduleForm()"
+									class="text-white bg-gray-900 hover:bg-blue-950 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center">
+									Cancel
+								</button>
+								<button onclick="closeScheduleForm()" type="submit"
+									class="text-white bg-green-400 hover:bg-green-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center">
+									Confirm
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div id="scheduleList" class="w-full mt-5">
+				{% if schedules %} {% for schedule in schedules %}
+				<div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="schedule-element-{{ schedule.id }}">
+					<div class="flex felx-row justify-between">
+						<p class="text-white text-xl">{{ schedule.title }}</p>
+						<a href="{{ schedule.url }}" class="text-green-400 text-sm underline" target="_blank">Link</a>
+					</div>
+					<hr class="border-gray-900 border rounded-lg my-2" />
+					<p class="text-white text-sm">{{ schedule.summary }}</p>
+					<p class="text-white text-sm">
+						Description: {{ schedule.description }}
+					</p>
+					<hr class="border-gray-900 border rounded-lg my-2" />
+					<div class="flex flex-row justify-between">
+						<p class="text-white text-sm">{{ schedule.datetime }}</p>
+						{% if user == subject.teacher or user.is_chief_teacher%}
+						<button
+							onclick="del(`{% url 'delete_schedule' subject_id=subject.id schedule_id=schedule.id %}`, '{{ schedule.id }}', 'schedule')">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+								class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group w-8">
+								<path fill="#dc2626"
+									d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+							</svg>
+						</button>
+						{% endif %}
+					</div>
+				</div>
+				{% endfor %} {% else %}
+				<div class="text-l text-white my-2" id="scheduleText">
+					You don't have any meetings
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="w-full ml-4">
+		<div class="rounded-lg bg-blue-950 p-3">
+			<!-- TOP BAR -->
+			<div class="flex flex-row justify-between">
+				<div class="justify-between">
+					<button class="bg-gray-900 text-white p-2 rounded-lg hover:bg-blue-900" onclick="tasks()">
+						Tasks
+					</button>
+					<button class="bg-gray-900 text-white p-2 ml-2 rounded-lg hover:bg-blue-900" onclick="students()">
+						Students
+					</button>
+				</div>
+				<button
+					class="inline-flex w-8 h-8 justify-center items-center bg-green-400 hover:bg-green-300 text-pink-50 hover:text-white rounded-full transition duration-150"
+					onclick="openTaskForm()">
+					+
+				</button>
+			</div>
+			<!-- TASKS -->
+			<div class="w-full my-2" id="tasksTab">
+				<div>
+					{% for material in materials %}
+					<div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="task-element-{{ material.id }}">
+						<div class="flex flex-row justify-between">
+							<div class="text-xl">{{ material.title }}</div>
+							{% if user == subject.teacher or user.is_chief_teacher%}
+							<button
+								onclick="del(`{% url 'delete_material' subject_id=subject.id material_id=material.id %}`, '{{ material.id }}', 'task')">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+									class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group w-8">
+									<path fill="#dc2626"
+										d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+								</svg>
+							</button>
+							{% endif %}
+						</div>
+						<hr class="border-gray-900 border rounded-lg my-2" />
+						<a href="{% url 'material_page' subject_id=subject.id material_id=material.id %}">
+							{{ material.description|safe }}
+							<div class="flex flex-row overflow-x-auto">
+								{% for file in material.files.all %}
+								{% if file.file.url.lower|slice:"-4:" == ".pdf" %}
+								<embed src="{% static file.file.url %}" type="application/pdf" />
+								{% elif file.file.url.lower|slice:"-5:" == ".jpeg" or file.file.url.lower|slice:"-4:" == ".jpg" or file.file.url.lower|slice:"-4:" == ".png" or file.file.url.lower|slice:"-4:" == ".gif" %}
+								<img src="{{ file.file.url }}" width="200px" />
+								{% elif file.file.url.lower|slice:"-4:" == ".mp4" or file.file.url.lower|slice:"-5:" == ".webm" %}
+								<video width="320" height="240" controls>
+									<source src="{{ file.file.url }}" type="video/{{
+								file.file.url.lower|slice:" -3:" }}"> Your browser does not
+									support the video tag.
+								</video>
+								{% elif file.file.url.lower|slice:"-4:" == ".mp3" or file.file.url.lower|slice:"-4:" == ".wav" %}
+								<audio controls>
+									<source src="{{ file.file.url }}" type="audio/{{ file.file.url.lower|slice:" -3:" }}">
+									Your browser does not support the audio element.
+								</audio>
+								{% else %}
+								<p>
+									File type not supported for preview.
+									<a href="{{ file.file.url }}">Download</a>
+								</p>
+								{% endif %}
+								{% endfor %}	
+							</div>
+							<hr class="border-gray-900 border rounded-lg my-2" />
+							{{ material.created_at }}
+						</a>
+					</div>
+					{% empty %}
+						<div class="text-xl my-2">This course is empty</div>
+					{% endfor %}
+				</div>
+			</div>
+			<!-- STUDENTS -->
+			<div class="rounded-lg w-full my-2 hidden" id="studentsTab">
+				{% if user.is_teacher or user.is_chief_teacher %}
+				<form method="post" id="studentsSearch">
+					{% csrf_token %}
+					<input class="bg-gray-900 rounded-lg p-2" style="margin: 0" type="search" placeholder="Search"
+						aria-label="Search" name="search" />
+					<button
+						class="inline-flex p-2 h-8 ml-2 justify-center items-center bg-green-400 hover:bg-green-300 text-pink-50 hover:text-white rounded-lg transition duration-150"
+						type="submit">
+						Search
+					</button>
+				</form>
+				{% endif %}
+				<div class="w-full" id="studentsList">
+					{% if subject.students %} {% for student in subject.students.all %}
+					<div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="student-element-{{ student.id }}">
+						<div class="flex flex-row justify-between">
+							<div class="text-xl">
+								{{ student.name }} {{ student.surname }}
+							</div>
+							{% if user == subject.user or user.is_chief_teacher%}
+							<button
+								onclick="del(`{% url 'delete_student' subject_id=subject.id student_id=student.id %}`, '{{ student.id }}', 'student')">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+									class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group w-8">
+									<path fill="#dc2626"
+										d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+								</svg>
+							</button>
+							{% endif %}
+						</div>
+						<hr class="border-gray-900 border rounded-lg my-2" />
+						{{ student.email }}
+					</div>
+					{% endfor %} {% else %}
+					<div class="text-xl my-2">This course is empty</div>
+					{% endif %}
+				</div>
+				<div class="w-full hidden" id="studentsSearchList"></div>
+			</div>
+			<!-- MATERIAL FORM -->
+			<div class="my-2 hidden" id="materialForm">
+				<div class="bg-blue-950 mt-14 rounded-lg w-max">
+					<h2 class="font-bold text-3xl mb-3 ml-3 text-white self-center">
+						Add Material
+					</h2>
+					<form method="post" enctype="multipart/form-data">
+						{% csrf_token %}
 
-                </div>
-            </div>
-            <div id="scheduleList" class="w-full mt-5">
-                {% if schedules %}
-                {% for schedule in schedules %}
-                <div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="schedule-element-{{ schedule.id }}">
-                    <div class="flex felx-row justify-between">
-                        <p class="text-white text-xl">{{ schedule.title }}</p>
-                        <a href="{{ schedule.url }}" class="text-green-400 text-sm underline" target="_blank">Link</a>
-                    </div>
-                    <hr class="border-gray-900 border rounded-lg my-2">
-                    <p class="text-white text-sm">{{ schedule.summary }}</p>
-                    <p class="text-white text-sm">Description: {{ schedule.description }}</p>
-                    <hr class="border-gray-900 border rounded-lg my-2">
-                    <div class="flex flex-row justify-between">
-                        <p class="text-white text-sm">{{ schedule.datetime }}</p>
-                        {% if user == subject.teacher or user.is_chief_teacher%}
-                            <button
-                                onclick="del(`{% url 'delete_schedule' subject_id=subject.id schedule_id=schedule.id %}`, '{{ schedule.id }}', 'schedule')">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
-                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group w-8">
-                                    <path fill="#dc2626"
-                                        d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
-                                </svg>
-                            </button>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div class="text-l text-white my-2" id="scheduleText">You don't have any meetings</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    <div class="w-full ml-4">
-        <div class="rounded-lg bg-blue-950 p-3">
-            <!-- TOP BAR -->
-            <div class="flex flex-row justify-between">
-                <div class="justify-between">
-                    <button class="bg-gray-900 text-white p-2 rounded-lg hover:bg-blue-900" onclick="tasks()">
-                        Tasks
-                    </button>
-                    <button class="bg-gray-900 text-white p-2 ml-2 rounded-lg hover:bg-blue-900" onclick="students()">
-                        Students
-                    </button>
-                </div>
-                <button
-                    class="inline-flex w-8 h-8 justify-center items-center bg-green-400 hover:bg-green-300 text-pink-50 hover:text-white rounded-full transition duration-150"
-                    onclick="openTaskForm()">+</button>
-            </div>
-            <!-- TASKS -->
-            <div class="w-full my-2" id="tasksTab">
-                <div>
-                    {% for material in materials %}
-                    <div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="task-element-{{ material.id }}">
-                        <div class="flex flex-row justify-between">
-                            <div class="text-xl">{{ material.title }}</div>
-                            {% if user == subject.user or user.is_chief_teacher%}
-                                <button
-                                    onclick="del(`{% url 'delete_material' subject_id=subject.id material_id=material.id %}`, '{{ material.id }}', 'task')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
-                                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group w-8">
-                                        <path fill="#dc2626"
-                                            d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
-                                    </svg>
-                                </button>
-                            {% endif %}
-                        </div>
-                        <hr class="border-gray-900 border rounded-lg my-2">
-                        {{ material.description|safe }}
-                        {% for file in material.files.all %}
-                        {% if file.file.url.lower|slice:"-4:" == ".pdf" %}
-                        <embed src="{% static file.file.url %}" type="application/pdf">
-                        {% elif file.file.url.lower|slice:"-4:" == ".jpg" or file.file.url.lower|slice:"-4:" == ".png" or file.file.url.lower|slice:"-4:" == ".gif" %}
-                        <img src="{{ file.file.url }}" width="200px" />
-                        {% elif file.file.url.lower|slice:"-4:" == ".mp4" or file.file.url.lower|slice:"-5:" == ".webm" %}
-                        <video width="320" height="240" controls>
-                            <source src="{{ file.file.url }}" type="video/{{ file.file.url.lower|slice:" -3:" }}">
-                            Your browser does not support the video tag.
-                        </video>
-                        {% elif file.file.url.lower|slice:"-4:" == ".mp3" or file.file.url.lower|slice:"-4:" == ".wav" %}
-                        <audio controls>
-                            <source src="{{ file.file.url }}" type="audio/{{ file.file.url.lower|slice:" -3:" }}">
-                            Your browser does not support the audio element.
-                        </audio>
-                        {% else %}
-                        <p>File type not supported for preview. <a href="{{ file.file.url }}">Download</a></p>
-                        {% endif %}
-                        {% endfor %}
-                        <hr class="border-gray-900 border rounded-lg my-2">
-                        {{ material.created_at }}
-                    </div>
-                    {% empty %}
-                    <div class="text-xl my-2">This course is empty</div>
-                    {% endfor %}
-                </div>
-            </div>
-            <!-- STUDENTS -->
-            <div class="rounded-lg w-full my-2 hidden" id="studentsTab">
-                {% if user.is_teacher or user.is_chief_teacher %}
-                <form method="post" id="studentsSearch">
-                    {% csrf_token %}
-                    <input class="bg-gray-900 rounded-lg p-2" style="margin: 0;" type="search" placeholder="Search"
-                        aria-label="Search" name="search">
-                    <button
-                        class="inline-flex p-2 h-8 ml-2 justify-center items-center bg-green-400 hover:bg-green-300 text-pink-50 hover:text-white rounded-lg transition duration-150"
-                        type="submit">Search</button>
-                </form>
-                {% endif %}
-                <div class="w-full" id="studentsList">
-                    {% if subject.students %}
-                    {% for student in subject.students.all %}
-                    <div class="rounded-lg border-gray-900 border-4 p-2 my-2" id="student-element-{{ student.id }}">
-                        <div class="flex flex-row justify-between">
-                            <div class="text-xl">{{ student.name }} {{ student.surname }}</div>
-                            {% if user == subject.user or user.is_chief_teacher%}
-                                <button
-                                    onclick="del(`{% url 'delete_student' subject_id=subject.id student_id=student.id %}`, '{{ student.id }}', 'student')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
-                                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group w-8">
-                                        <path fill="#dc2626"
-                                            d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
-                                    </svg>
-                                </button>
-                            {% endif %}
-                        </div>
-                        <hr class="border-gray-900 border rounded-lg my-2">
-                        {{ student.email }}
-                    </div>
-                    {% endfor %}
-                    {% else %}
-                    <div class="text-xl my-2">This course is empty</div>
-                    {% endif %}
-                </div>
-                <div class="w-full hidden" id="studentsSearchList">
+						<div class="">{{ material_form.title }}</div>
 
-                </div>
-            </div>
-            <!-- MATERIAL FORM -->
-            <div class="my-2 hidden" id="materialForm">
-                <div class="bg-blue-950 mt-14 rounded-lg w-max">
-                    <h2 class="font-bold text-3xl mb-3 ml-3 text-white self-center">Add Material</h2>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
+						<div class="ms-3 me-3">
+							{{ material_form.media }} {{ material_form.description }}
+						</div>
 
-                        <div class="">
-                            {{ material_form.title }}
-                        </div>
-
-                        <div class="ms-3 me-3">
-                            {{ material_form.media }}
-                            {{ material_form.description }}
-                        </div>
-
-                        <div class="chose-file">
-                            {{ file_formset.management_form }}
-                            {% for form_file in file_formset %}
-                            {{ form_file.file }}
-                            {% endfor %}
-                            <button type="submit"
-                                class="bg-gray-900 hover:bg-green-400 text-white font-bold py-2 px-4 rounded mx-4 mt-4"
-                                onclick="closeTaskForm()">Upload</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+						<div class="chose-file">
+							{{ file_formset.management_form }} {% for form_file in file_formset %} {{ form_file.file }}
+							{% endfor %}
+							<button type="submit"
+								class="bg-gray-900 hover:bg-green-400 text-white font-bold py-2 px-4 rounded mx-4 mt-4"
+								onclick="closeTaskForm()">
+								Upload
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
-    function openScheduleForm(modalId) {
-        $('#schedule').removeClass('hidden')
-        $('#scheduleList').addClass('hidden')
-    }
+	function openScheduleForm(modalId) {
+		$("#schedule").removeClass("hidden");
+		$("#scheduleList").addClass("hidden");
+	}
 
-    function closeScheduleForm(modalId) {
-        $('#schedule').addClass('hidden')
-        $('#scheduleList').removeClass('hidden')
-    }
+	function closeScheduleForm(modalId) {
+		$("#schedule").addClass("hidden");
+		$("#scheduleList").removeClass("hidden");
+	}
 
-    function tasks() {
-        $('#tasksTab').removeClass('hidden')
-        $('#studentsTab').addClass('hidden')
-        $('#materialForm').addClass('hidden')
-    }
+	function tasks() {
+		$("#tasksTab").removeClass("hidden");
+		$("#studentsTab").addClass("hidden");
+		$("#materialForm").addClass("hidden");
+	}
 
-    function students() {
-        $('#studentsTab').removeClass('hidden')
-        $('#tasksTab').addClass('hidden')
-        $('#materialForm').addClass('hidden')
-        $('#studentsList').removeClass('hidden')
-        $('#studentsSearchList').addClass('hidden')
-    }
+	function students() {
+		$("#studentsTab").removeClass("hidden");
+		$("#tasksTab").addClass("hidden");
+		$("#materialForm").addClass("hidden");
+		$("#studentsList").removeClass("hidden");
+		$("#studentsSearchList").addClass("hidden");
+	}
 
-    function openTaskForm() {
-        $('#studentsTab').addClass('hidden')
-        $('#tasksTab').addClass('hidden')
-        $('#materialForm').removeClass('hidden')
-    }
+	function openTaskForm() {
+		$("#studentsTab").addClass("hidden");
+		$("#tasksTab").addClass("hidden");
+		$("#materialForm").removeClass("hidden");
+	}
 
-    function closeTaskForm() {
-        $('#tasksTab').removeClass('hidden')
-        $('#materialForm').addClass('hidden')
-    }
+	function closeTaskForm() {
+		$("#tasksTab").removeClass("hidden");
+		$("#materialForm").addClass("hidden");
+	}
 
-    function del(url, id, item) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
-            success: function (data) {
-                console.log('success', data)
-                $(`#${item}-element-${id}`).remove()
-            },
-            error: function (data) {
-                console.log('error', data)
-            }
-        })
-    }
+	function del(url, id, item) {
+		$.ajax({
+			url: url,
+			type: "POST",
+			data: {
+				csrfmiddlewaretoken: "{{ csrf_token }}",
+			},
+			success: function (data) {
+				console.log("success", data);
+				$(`#${item}-element-${id}`).remove();
+			},
+			error: function (data) {
+				console.log("error", data);
+			},
+		});
+	}
 
-    function copy() {
-        var text = $('#url').text()
-        var tempTextarea = $('<textarea>');
-        $('body').append(tempTextarea);
-        tempTextarea.val(text).select();
-        document.execCommand('copy');
-        tempTextarea.remove();
-    }
+	function copy() {
+		var text = $("#url").text();
+		var tempTextarea = $("<textarea>");
+		$("body").append(tempTextarea);
+		tempTextarea.val(text).select();
+		document.execCommand("copy");
+		tempTextarea.remove();
+	}
 
-    $(document).ready(function () {
-        $('#scheduleForm').submit(function (event) {
-            event.preventDefault()
-            $('#scheduleText').addClass('hidden')
-            let formData = new FormData(this)
+	$(document).ready(function () {
+		$("#scheduleForm").submit(function (event) {
+			event.preventDefault();
+			$("#scheduleText").addClass("hidden");
+			let formData = new FormData(this);
 
-            $.ajax({
-                url: "{% url 'create_schedule' subject_id=subject.id %}",
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    console.log('success', data)
-                    $('#scheduleList').prepend(data.html)
-                    $('form')[0].reset()
-                },
-                error: function (data) {
-                    console.log('error', data)
-                }
-            })
-        })
+			$.ajax({
+				url: "{% url 'create_schedule' subject_id=subject.id %}",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (data) {
+					console.log("success", data);
+					$("#scheduleList").prepend(data.html);
+					$("form")[0].reset();
+				},
+				error: function (data) {
+					console.log("error", data);
+				},
+			});
+		});
 
-        $('#studentsSearch').submit(function (event) {
-            event.preventDefault()
-            $('#studentsList').addClass('hidden')
-            $('#studentsSearchList').removeClass('hidden')
-            let formData = new FormData(this)
+		$("#studentsSearch").submit(function (event) {
+			event.preventDefault();
+			$("#studentsList").addClass("hidden");
+			$("#studentsSearchList").removeClass("hidden");
+			let formData = new FormData(this);
 
-            $.ajax({
-                url: "{% url 'students_search' subject_id=subject.id %}",
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    console.log('success', data)
-                    $('#studentsSearchList').empty()
-                    $('#studentsSearchList').prepend(data.html)
-                    $('form')[0].reset()
-                },
-                error: function (data) {
-                    console.log('error', data)
-                }
-            })
-        })
-    })
-
+			$.ajax({
+				url: "{% url 'students_search' subject_id=subject.id %}",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (data) {
+					console.log("success", data);
+					$("#studentsSearchList").empty();
+					$("#studentsSearchList").prepend(data.html);
+					$("form")[0].reset();
+				},
+				error: function (data) {
+					console.log("error", data);
+				},
+			});
+		});
+	});
 </script>
 
 {% endblock %}
